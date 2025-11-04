@@ -10,6 +10,10 @@ const app = express();
 app.use(express.json());
 app.use(morgan("dev"));
 
+// Serving static files
+app.use(express.static(`${process.cwd()}/public`));
+//process.cwd() gives the current working directory
+
 // Mounting the routers
 app.use("/api/v1/tours", tourRouter);
 app.use("/api/v1/users", userRouter);
