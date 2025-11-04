@@ -1,6 +1,6 @@
 const getAllUsers = (req, res) => {
   res.status(200).json({
-    status: "success",
+    status: 'success',
     results: 0,
     data: {
       users: [],
@@ -9,9 +9,9 @@ const getAllUsers = (req, res) => {
 };
 
 const getUserById = (req, res) => {
-  const { id } = req.params;
+  // const { id } = req.params;
   res.status(200).json({
-    status: "success",
+    status: 'success',
     data: {
       user: {},
     },
@@ -20,7 +20,7 @@ const getUserById = (req, res) => {
 
 const createUser = (req, res) => {
   res.status(201).json({
-    status: "success",
+    status: 'success',
     data: {
       user: {},
     },
@@ -28,9 +28,9 @@ const createUser = (req, res) => {
 };
 
 const updateUser = (req, res) => {
-  const { id } = req.params;
+  // const { id } = req.params;
   res.status(200).json({
-    status: "success",
+    status: 'success',
     data: {
       user: {},
     },
@@ -38,9 +38,9 @@ const updateUser = (req, res) => {
 };
 
 const deleteUser = (req, res) => {
-  const { id } = req.params;
+  // const { id } = req.params;
   res.status(204).json({
-    status: "success",
+    status: 'success',
     data: null,
   });
 };

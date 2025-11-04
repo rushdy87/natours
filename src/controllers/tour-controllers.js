@@ -7,8 +7,8 @@ const checkBody = (req, res, next) => {
   const { name, price } = req.body;
   if (!name || !price) {
     return res.status(400).json({
-      status: "fail",
-      message: "Missing name or price",
+      status: 'fail',
+      message: 'Missing name or price',
     });
   }
   next();
@@ -16,7 +16,7 @@ const checkBody = (req, res, next) => {
 
 const getAllTours = (req, res) => {
   res.status(200).json({
-    status: "success",
+    status: 'success',
     results: 0,
     data: {
       tours: [],
@@ -25,9 +25,9 @@ const getAllTours = (req, res) => {
 };
 
 const getTourById = (req, res) => {
-  const { id } = req.params;
+  // const { id } = req.params;
   res.status(200).json({
-    status: "success",
+    status: 'success',
     data: {
       tour: {},
     },
@@ -36,7 +36,7 @@ const getTourById = (req, res) => {
 
 const createTour = (req, res) => {
   res.status(201).json({
-    status: "success",
+    status: 'success',
     data: {
       tour: {},
     },
@@ -44,9 +44,9 @@ const createTour = (req, res) => {
 };
 
 const updateTour = (req, res) => {
-  const { id } = req.params;
+  // const { id } = req.params;
   res.status(200).json({
-    status: "success",
+    status: 'success',
     data: {
       tour: {},
     },
@@ -54,9 +54,9 @@ const updateTour = (req, res) => {
 };
 
 const deleteTour = (req, res) => {
-  const { id } = req.params;
+  // const { id } = req.params;
   res.status(204).json({
-    status: "success",
+    status: 'success',
     data: null,
   });
 };

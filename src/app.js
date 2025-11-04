@@ -1,22 +1,24 @@
-import express from "express";
-import "colors";
-import morgan from "morgan";
+import express from 'express';
+import 'colors';
+import morgan from 'morgan';
 
-import tourRouter from "./routers/tour-routes.js";
-import userRouter from "./routers/user-routes.js";
+import tourRouter from './routers/tour-routes.js';
+import userRouter from './routers/user-routes.js';
 
 const app = express();
 
 app.use(express.json());
-app.use(morgan("dev"));
+if (process.env.NODE_ENV === 'development') {
+  app.use(morgan('dev'));
+}
 
 // Serving static files
 app.use(express.static(`${process.cwd()}/public`));
 //process.cwd() gives the current working directory
 
 // Mounting the routers
-app.use("/api/v1/tours", tourRouter);
-app.use("/api/v1/users", userRouter);
+app.use('/api/v1/tours', tourRouter);
+app.use('/api/v1/users', userRouter);
 
 export default app;
 
