@@ -12,6 +12,8 @@ if (process.env.NODE_ENV === 'development') {
   app.use(morgan('dev'));
 }
 
+app.set('query parser', 'extended');
+
 // Serving static files
 app.use(express.static(`${process.cwd()}/public`));
 //process.cwd() gives the current working directory

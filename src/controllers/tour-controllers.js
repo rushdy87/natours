@@ -1,8 +1,15 @@
 import Tour from '../models/tour-model.js';
+import { buildQueryParams } from '../utils/query-params.js';
 
 const getAllTours = async (req, res) => {
   try {
-    const tours = await Tour.find();
+    const queryParams = buildQueryParams({ ...req.query });
+
+    // build query
+    const query = Tour.find(queryParams);
+
+    // execute query
+    const tours = await query;
     res.status(200).json({
       status: 'success',
       results: tours.length,
