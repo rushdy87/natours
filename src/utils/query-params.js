@@ -20,3 +20,8 @@ export const buildQueryParams = (queryParams) => {
   filteredParams = replaceMongooseOperators(filteredParams);
   return filteredParams;
 };
+
+export const parseSortingParams = (sortingString) => {
+  const sortBy = sortingString.split(',').join(' ');
+  return sortBy;
+};

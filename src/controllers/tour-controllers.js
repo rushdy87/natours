@@ -1,12 +1,20 @@
 import Tour from '../models/tour-model.js';
-import { buildQueryParams } from '../utils/query-params.js';
+import { buildQueryParams, parseSortingParams } from '../utils/query-params.js';
 
 const getAllTours = async (req, res) => {
   try {
+    // filtering
     const queryParams = buildQueryParams({ ...req.query });
 
     // build query
-    const query = Tour.find(queryParams);
+    let query = Tour.find(queryParams);
+
+    // sorting
+    if (req.query.sort) {
+      query = query.sort(parseSortingParams(req.query.sort));
+    } else {
+      query = query.sort('-createdAt');
+    }
 
     // execute query
     const tours = await query;
