@@ -1,5 +1,9 @@
 import Tour from '../models/tour-model.js';
-import { buildQueryParams, parseListParams } from '../utils/query-params.js';
+import {
+  buildQueryParams,
+  pageAndLimit,
+  parseListParams,
+} from '../utils/query-params.js';
 
 const getAllTours = async (req, res) => {
   try {
@@ -21,6 +25,17 @@ const getAllTours = async (req, res) => {
       query = query.select(parseListParams(req.query.fields));
     } else {
       query = query.select('-__v');
+    }
+
+    // pagination
+    const { skip, limit } = pageAndLimit(req.query.page, req.query.limit);
+    query = query.skip(skip).limit(limit);
+
+    if (req.query.page) {
+      const numTours = await Tour.countDocuments(queryParams);
+      if (skip >= numTours) {
+        throw new Error('This page does not exist');
+      }
     }
 
     // execute query

@@ -23,3 +23,10 @@ export const buildQueryParams = (queryParams) => {
 
 export const parseListParams = (paramString) =>
   paramString.split(',').join(' ');
+
+export const pageAndLimit = (page = 1, limit = 100) => {
+  const pageNum = parseInt(page, 10);
+  const limitNum = parseInt(limit, 10);
+  const skip = (pageNum - 1) * limitNum;
+  return { skip, limit: limitNum };
+};
