@@ -21,7 +21,5 @@ export const buildQueryParams = (queryParams) => {
   return filteredParams;
 };
 
-export const parseSortingParams = (sortingString) => {
-  const sortBy = sortingString.split(',').join(' ');
-  return sortBy;
-};
+export const parseListParams = (paramString) =>
+  paramString.split(',').join(' ');
