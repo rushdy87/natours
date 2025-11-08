@@ -1,45 +1,11 @@
 import Tour from '../models/tour-model.js';
-import {
-  buildQueryParams,
-  pageAndLimit,
-  parseListParams,
-} from '../utils/query-params.js';
+import APIFeatures from '../utils/api-features.js';
 
 const getAllTours = async (req, res) => {
   try {
-    // filtering
-    const queryParams = buildQueryParams({ ...req.query });
+    const features = new APIFeatures(Tour.find(), req.query);
 
-    // build query
-    let query = Tour.find(queryParams);
-
-    // sorting
-    if (req.query.sort) {
-      query = query.sort(parseListParams(req.query.sort));
-    } else {
-      query = query.sort('-createdAt');
-    }
-
-    // field limiting
-    if (req.query.fields) {
-      query = query.select(parseListParams(req.query.fields));
-    } else {
-      query = query.select('-__v');
-    }
-
-    // pagination
-    const { skip, limit } = pageAndLimit(req.query.page, req.query.limit);
-    query = query.skip(skip).limit(limit);
-
-    if (req.query.page) {
-      const numTours = await Tour.countDocuments(queryParams);
-      if (skip >= numTours) {
-        throw new Error('This page does not exist');
-      }
-    }
-
-    // execute query
-    const tours = await query;
+    const tours = await features.filter().sort().limitFields().paginate().query;
     res.status(200).json({
       status: 'success',
       results: tours.length,
