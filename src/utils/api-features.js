@@ -14,7 +14,7 @@ export default class APIFeatures {
   // Method to apply filtering based on query parameters
   filter() {
     const queryObj = { ...this.queryString };
-    this.excludedFields.forEach((el) => delete queryObj[el]);
+    APIFeatures.excludedFields.forEach((el) => delete queryObj[el]);
 
     // Advanced filtering
     let queryStr = JSON.stringify(queryObj);
