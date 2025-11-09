@@ -59,6 +59,10 @@ const tourSchema = new mongoose.Schema(
       select: false,
     },
     startDates: [Date],
+    secretTour: {
+      type: Boolean,
+      default: false,
+    },
   },
   {
     toJSON: { virtuals: true },
@@ -71,6 +75,7 @@ tourSchema.virtual('durationWeeks').get(function () {
   return this.duration / 7;
 });
 
+// Document Middleware: runs before .save() and .create()
 tourSchema.pre('save', function (next) {
   this.slug = slugify(this.name, { lower: true });
   next();
@@ -86,14 +91,26 @@ tourSchema.pre('save', function (next) {
 //   next();
 // });
 
+// Query Middleware: runs before any find query
+tourSchema.pre(/^find/, function (next) {
+  this.find({ secretTour: { $ne: true } });
+  // this.start = Date.now();
+  next();
+});
+
+// tourSchema.post(/^find/, function (docs, next) {
+//   console.log(`Query took ${Date.now() - this.start} milliseconds`);
+//   next();
+// });
+
 const Tour = mongoose.model('Tour', tourSchema);
 
 export default Tour;
 
 // Middleware is a fundamental concept in MongoDB and Mongoose that allows you to define functions that run at specific stages of the document lifecycle. These functions can be used to perform operations such as validation, transformation, or logging before or after certain events occur, such as saving a document or querying the database.
 // There are four types of middlewares in mongoose:
-// 1) Document.
-// 2) Query.
+// 1) Document Middlewares.
+// 2) Query Middlewares.
 // 3) Aggregate.
 // 4) Model Middleware.
 // Document middleware is used to define functions that run before or after certain document methods are executed, such as save(), validate(), remove(), and updateOne(). Document middleware functions have access to the document being processed and can modify its properties or perform additional operations before or after the method is executed.
