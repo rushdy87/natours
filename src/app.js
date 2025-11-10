@@ -2,6 +2,9 @@ import express from 'express';
 import 'colors';
 import morgan from 'morgan';
 
+import AppError from './utils/app-error.js';
+import { errorHandler } from './middlewares/error-middlewares.js';
+
 import tourRouter from './routers/tour-routes.js';
 import userRouter from './routers/user-routes.js';
 
@@ -24,11 +27,10 @@ app.use('/api/v1/users', userRouter);
 
 // Handling Unhandled Routes
 app.all('/{*splat}', (req, res, next) => {
-  res.status(404).json({
-    status: 'fail',
-    message: `Can't find ${req.originalUrl} on this server!`,
-  });
+  next(new AppError(`Can't find ${req.originalUrl} on this server!`, 404));
 });
+// Global Error Handling Middleware
+app.use(errorHandler);
 
 export default app;
 
