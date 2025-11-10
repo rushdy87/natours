@@ -6,6 +6,7 @@
   "scripts": {
     "dev": "node --env-file=config/.env --watch src/server.js",
     "start": "NODE_ENV=production node --env-file=config/.env src/server.js",
+    "debug": "ndb --env-file=config/.env src/server.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -38,6 +39,7 @@
     "eslint-plugin-node": "^11.1.0",
     "eslint-plugin-prettier": "^5.5.4",
     "eslint-plugin-react": "^7.37.5",
+    "ndb": "^1.1.5",
     "prettier": "^3.6.2"
   }
 }

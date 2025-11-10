@@ -22,6 +22,14 @@ app.use(express.static(`${process.cwd()}/public`));
 app.use('/api/v1/tours', tourRouter);
 app.use('/api/v1/users', userRouter);
 
+// Handling Unhandled Routes
+app.all('/{*splat}', (req, res, next) => {
+  res.status(404).json({
+    status: 'fail',
+    message: `Can't find ${req.originalUrl} on this server!`,
+  });
+});
+
 export default app;
 
 /* Notes about separating app and server:
