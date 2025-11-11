@@ -1,3 +1,37 @@
+import AppError from '../utils/app-error.js';
+
+const sendErrorDev = (err, res) => {
+  res.status(err.statusCode).json({
+    status: err.status,
+    error: err,
+    message: err.message,
+    stack: err.stack,
+  });
+};
+
+const sendErrorProd = (err, res) => {
+  // Operational, trusted error: send message to client
+  if (err.isOperational) {
+    res.status(err.statusCode).json({
+      status: err.status,
+      message: err.message,
+    });
+  }
+
+  // Programming or other unknown error: don't leak error details
+  console.error('ERROR 💥:', err);
+  res.status(500).json({
+    status: 'error',
+    message: 'Something went very wrong!',
+  });
+};
+
+const handleCastErrorDB = (err) => {
+  const message = `Invalid ${err.path}: ${err.value}.`;
+  const error = new AppError(message, 400);
+  return error;
+};
+
 export const errorHandler = (err, req, res, next) => {
   err.statusCode = err.statusCode || 500;
   err.status = err.status || 'error';
@@ -5,26 +39,15 @@ export const errorHandler = (err, req, res, next) => {
 
   if (process.env.NODE_ENV === 'development') {
     console.error('ERROR 💥:', err);
-    return res.status(err.statusCode).json({
-      status: err.status,
-      error: err,
-      message: err.message,
-      stack: err.stack,
-    });
-  }
+    sendErrorDev(err, res);
+  } else if (process.env.NODE_ENV === 'production') {
+    let error = err;
 
-  // Production error handling
-  if (!err.isOperational) {
-    console.error('ERROR 💥:', err);
-    // Send generic message for programming or unknown errors
-    return res.status(500).json({
-      status: 'error',
-      message: 'Something went very wrong!',
-    });
+    // Check for CastError using the original error object
+    if (err.name === 'CastError') {
+      error = handleCastErrorDB(err);
+    }
+
+    sendErrorProd(error, res);
   }
-  // Operational, trusted error: send message to client
-  res.status(err.statusCode).json({
-    status: err.status,
-    message: err.message,
-  });
 };

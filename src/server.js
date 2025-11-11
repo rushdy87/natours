@@ -8,6 +8,10 @@ await connectDB();
 
 app.listen(PORT, () => {
   console.log(
-    `Server is up and running on port ${PORT} on ${app.get('env')} mode`.green,
+    'Server is up and running on port ' +
+      `${PORT}`.red +
+      ' on ' +
+      `${app.get('env')}`.green +
+      ' mode',
   );
 });
