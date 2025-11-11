@@ -32,6 +32,13 @@ const handleCastErrorDB = (err) => {
   return error;
 };
 
+const handleDuplicateFieldsDB = (err) => {
+  const value = err.errmsg.match(/(["'])(\\?.)*?\1/)[0];
+  const message = `Duplicate field value: ${value}. Please use another value!`;
+  const error = new AppError(message, 400);
+  return error;
+};
+
 export const errorHandler = (err, req, res, next) => {
   err.statusCode = err.statusCode || 500;
   err.status = err.status || 'error';
@@ -46,6 +53,11 @@ export const errorHandler = (err, req, res, next) => {
     // Check for CastError using the original error object
     if (err.name === 'CastError') {
       error = handleCastErrorDB(err);
+    }
+
+    // Handle duplicate key error
+    if (err.code === 11000) {
+      error = handleDuplicateFieldsDB(err);
     }
 
     sendErrorProd(error, res);
