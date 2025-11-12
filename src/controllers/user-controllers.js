@@ -1,12 +1,17 @@
-const getAllUsers = (req, res) => {
+import User from '../models/user-model.js';
+import { catchAsync } from '../utils/catch-async.js';
+
+const getAllUsers = catchAsync(async (req, res, next) => {
+  const users = await User.find();
+
   res.status(200).json({
     status: 'success',
-    results: 0,
+    results: users.length,
     data: {
-      users: [],
+      users,
     },
   });
-};
+});
 
 const getUserById = (req, res) => {
   // const { id } = req.params;
