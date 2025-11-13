@@ -2,6 +2,8 @@ import { Router } from 'express';
 
 import tourControllers from '../controllers/tour-controllers.js';
 
+const { protect } = await import('../middlewares/protect-middlewares.js');
+
 const router = Router();
 
 router.route('/tour-stats').get(tourControllers.getTourStats);
@@ -9,7 +11,7 @@ router.route('/monthly-plan/:year').get(tourControllers.getMonthlyPlan);
 
 router
   .route('/')
-  .get(tourControllers.getAllTours)
+  .get(protect, tourControllers.getAllTours)
   .post(tourControllers.createTour);
 
 router
