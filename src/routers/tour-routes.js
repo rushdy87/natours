@@ -2,7 +2,9 @@ import { Router } from 'express';
 
 import tourControllers from '../controllers/tour-controllers.js';
 
-const { protect } = await import('../middlewares/protect-middlewares.js');
+const { protect, restrictTo } = await import(
+  '../middlewares/authorization-middlewares.js'
+);
 
 const router = Router();
 
@@ -18,6 +20,10 @@ router
   .route('/:id')
   .get(tourControllers.getTourById)
   .patch(tourControllers.updateTour)
-  .delete(tourControllers.deleteTour);
+  .delete(
+    protect,
+    restrictTo('admin', 'lead-guide'),
+    tourControllers.deleteTour,
+  );
 
 export default router;
