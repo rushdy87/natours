@@ -80,6 +80,15 @@ const deleteUser = (req, res) => {
   });
 };
 
+const deleteMe = catchAsync(async (req, res, next) => {
+  await User.findByIdAndUpdate(req.user.id, { active: false });
+
+  res.status(204).json({
+    status: 'success',
+    data: null,
+  });
+});
+
 export default {
   getAllUsers,
   getUserById,
@@ -87,4 +96,5 @@ export default {
   updateUser,
   updateMe,
   deleteUser,
+  deleteMe,
 };
