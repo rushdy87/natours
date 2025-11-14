@@ -7,12 +7,14 @@ import {
   updateUser,
   deleteUser,
 } from '../controllers/user-controllers.js';
-import { login, signup } from '../controllers/auth-controllers.js';
+import AuthControllers from '../controllers/auth-controllers.js';
 
 const router = Router();
 
-router.post('/signup', signup);
-router.post('/login', login);
+router.post('/signup', AuthControllers.signup);
+router.post('/login', AuthControllers.login);
+router.post('/forgot-password', AuthControllers.forgotPassword);
+router.patch('/reset-password/:token', AuthControllers.resetPassword);
 
 router.route('/').get(getAllUsers).post(createUser);
 
