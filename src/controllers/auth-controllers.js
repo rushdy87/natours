@@ -1,27 +1,10 @@
 import crypto from 'crypto';
-// eslint-disable-next-line import/no-extraneous-dependencies
-import jwt from 'jsonwebtoken';
+
 import User from '../models/user-model.js';
 import { catchAsync } from '../utils/catch-async.js';
 import AppError from '../utils/app-error.js';
 import { sendEmail } from '../utils/email.js';
-
-const signToken = (id) =>
-  jwt.sign({ id }, process.env.JWT_SECRET, {
-    expiresIn: process.env.JWT_EXPIRES_IN,
-  });
-
-const createAndSendToken = (user, statusCode, res) => {
-  const token = signToken(user._id);
-
-  res.status(statusCode).json({
-    status: 'success',
-    token,
-    data: {
-      user,
-    },
-  });
-};
+import { createAndSendToken } from '../services/auth-service.js';
 
 const signup = catchAsync(async (req, res, next) => {
   const newUser = await User.create({
