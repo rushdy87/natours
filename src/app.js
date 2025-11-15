@@ -1,6 +1,7 @@
 import express from 'express';
 import 'colors';
 import morgan from 'morgan';
+import { rateLimit } from 'express-rate-limit';
 
 import AppError from './utils/app-error.js';
 import { errorHandler } from './middlewares/error-middlewares.js';
@@ -16,6 +17,14 @@ if (process.env.NODE_ENV === 'development') {
 }
 
 app.set('query parser', 'extended');
+
+// Rate limiting middleware
+const limiter = rateLimit({
+  max: 100, // Limit each IP to 100 requests per windowMs
+  windowMs: 60 * 60 * 1000, // 1 hour
+  message: 'Too many requests from this IP, please try again after an hour',
+});
+app.use('/api', limiter);
 
 // Serving static files
 app.use(express.static(`${process.cwd()}/public`));
