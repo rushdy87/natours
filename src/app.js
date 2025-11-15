@@ -3,6 +3,7 @@ import 'colors';
 import morgan from 'morgan';
 import { rateLimit } from 'express-rate-limit';
 import helmet from 'helmet';
+import xss from 'xss';
 
 import AppError from './utils/app-error.js';
 import { errorHandler } from './middlewares/error-middlewares.js';
@@ -33,6 +34,40 @@ const limiter = rateLimit({
   message: 'Too many requests from this IP, please try again after an hour',
 });
 app.use('/api', limiter);
+
+// Data Sanitization against NoSQL query injection
+app.use((req, res, next) => {
+  const sanitize = (obj) => {
+    if (obj && typeof obj === 'object') {
+      Object.keys(obj).forEach((key) => {
+        if (typeof obj[key] === 'string') {
+          // Remove MongoDB operators from strings
+          obj[key] = obj[key].replace(/\$|\./g, '');
+        } else if (typeof obj[key] === 'object') {
+          sanitize(obj[key]);
+        }
+      });
+    }
+  };
+
+  // Only sanitize body and params, not query
+  if (req.body) sanitize(req.body);
+  if (req.params) sanitize(req.params);
+
+  next();
+});
+
+// Data Sanitization against XSS
+app.use((req, res, next) => {
+  if (req.body) {
+    Object.keys(req.body).forEach((key) => {
+      if (typeof req.body[key] === 'string') {
+        req.body[key] = xss(req.body[key]);
+      }
+    });
+  }
+  next();
+});
 
 // Serving static files
 app.use(express.static(`${process.cwd()}/public`));
