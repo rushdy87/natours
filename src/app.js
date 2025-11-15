@@ -4,6 +4,7 @@ import morgan from 'morgan';
 import { rateLimit } from 'express-rate-limit';
 import helmet from 'helmet';
 import xss from 'xss';
+import hpp from 'hpp';
 
 import AppError from './utils/app-error.js';
 import { errorHandler } from './middlewares/error-middlewares.js';
@@ -27,6 +28,20 @@ app.set('query parser', 'extended');
 // Setting security HTTP headers
 app.use(helmet());
 
+// Prevent HTTP Parameter Pollution
+app.use(
+  hpp({
+    whitelist: [
+      'ratingsQuantity',
+      'ratingsAverage',
+      'duration',
+      'difficulty',
+      'maxGroupSize',
+      'price',
+    ], // Allow multiple values for these parameters
+  }),
+);
+
 // Rate limiting middleware
 const limiter = rateLimit({
   max: 100, // Limit each IP to 100 requests per windowMs
@@ -42,7 +57,7 @@ app.use((req, res, next) => {
       Object.keys(obj).forEach((key) => {
         if (typeof obj[key] === 'string') {
           // Remove MongoDB operators from strings
-          obj[key] = obj[key].replace(/\$|\./g, '');
+          obj[key] = obj[key].replace(/\$/g, '');
         } else if (typeof obj[key] === 'object') {
           sanitize(obj[key]);
         }
