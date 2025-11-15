@@ -2,6 +2,7 @@ import express from 'express';
 import 'colors';
 import morgan from 'morgan';
 import { rateLimit } from 'express-rate-limit';
+import helmet from 'helmet';
 
 import AppError from './utils/app-error.js';
 import { errorHandler } from './middlewares/error-middlewares.js';
@@ -11,12 +12,19 @@ import userRouter from './routers/user-routes.js';
 
 const app = express();
 
-app.use(express.json());
+// Middleware Setup
+app.use(express.json({ limit: '10kb' })); // Body parser, reading data from body into req.body
+
 if (process.env.NODE_ENV === 'development') {
+  // Logging middleware in development mode only
   app.use(morgan('dev'));
 }
 
+// Parsing URL-encoded data with extended option
 app.set('query parser', 'extended');
+
+// Setting security HTTP headers
+app.use(helmet());
 
 // Rate limiting middleware
 const limiter = rateLimit({
