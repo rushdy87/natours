@@ -3,6 +3,7 @@ import mongoose from 'mongoose';
 import slugify from 'slugify';
 // eslint-disable-next-line import/no-extraneous-dependencies
 // import validator from 'validator';
+// import User from './user-model.js';
 
 const tourSchema = new mongoose.Schema(
   {
@@ -107,7 +108,7 @@ const tourSchema = new mongoose.Schema(
     ],
     guides: [
       {
-        type: mongoose.Schema.ObjectId,
+        type: mongoose.Schema.Types.ObjectId,
         ref: 'User',
       },
     ],
@@ -128,6 +129,13 @@ tourSchema.pre('save', function (next) {
   this.slug = slugify(this.name, { lower: true });
   next();
 });
+
+// Populate guides before saving, this example of embedding user documents - commented out for reference
+// tourSchema.pre('save', async function (next) {
+//   const guidesPromises = this.guides.map(async (id) => await User.findById(id));
+//   this.guides = await Promise.all(guidesPromises);
+//   next();
+// });
 
 // tourSchema.pre('save', function (next) {
 //   console.log('Will save document...');
