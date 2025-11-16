@@ -12,7 +12,7 @@ await connectDB();
 
 // Read JSON file
 const tours = JSON.parse(
-  fs.readFileSync(`${process.cwd()}/dev-data/data/tours-simple.json`, 'utf-8'),
+  fs.readFileSync(`${process.cwd()}/dev-data/data/tours.json`, 'utf-8'),
 );
 
 // Import data into DB
