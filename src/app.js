@@ -11,6 +11,7 @@ import { errorHandler } from './middlewares/error-middlewares.js';
 
 import tourRouter from './routers/tour-routes.js';
 import userRouter from './routers/user-routes.js';
+import reviewRouter from './routers/review-routes.js';
 
 const app = express();
 
@@ -91,6 +92,7 @@ app.use(express.static(`${process.cwd()}/public`));
 // Mounting the routers
 app.use('/api/v1/tours', tourRouter);
 app.use('/api/v1/users', userRouter);
+app.use('/api/v1/reviews', reviewRouter);
 
 // Handling Unhandled Routes
 app.all('/{*splat}', (req, res, next) => {
