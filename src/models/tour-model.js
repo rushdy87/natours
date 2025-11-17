@@ -159,6 +159,15 @@ tourSchema.pre(/^find/, function (next) {
 //   next();
 // });
 
+// Populate guides on find queries
+tourSchema.pre(/^find/, function (next) {
+  this.populate({
+    path: 'guides',
+    select: '-__v -passwordChangedAt',
+  });
+  next();
+});
+
 // Aggregate Middleware: runs before any aggregate query
 tourSchema.pre('aggregate', function (next) {
   this.pipeline().unshift({ $match: { secretTour: { $ne: true } } });
