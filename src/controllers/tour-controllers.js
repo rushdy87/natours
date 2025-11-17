@@ -19,7 +19,10 @@ const getAllTours = catchAsync(async (req, res, next) => {
 const getTourById = catchAsync(async (req, res, next) => {
   const { id } = req.params;
 
-  const tour = await Tour.findById(id);
+  const tour = await Tour.findById(id).populate({
+    path: 'reviews',
+    select: 'review rating user',
+  });
   if (!tour) {
     return next(new AppError(`No tour found with ID: ${id}`, 404));
   }
