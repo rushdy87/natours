@@ -26,4 +26,5 @@ router
   .get(userControllers.getUserById)
   .patch(userControllers.updateUser)
   .delete(userControllers.deleteUser);
+
 export default router;

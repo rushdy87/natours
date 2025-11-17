@@ -1,8 +1,5 @@
 import { Router } from 'express';
-import {
-  createReview,
-  getAllReviews,
-} from '../controllers/review-controllers.js';
+import reviewControllers from '../controllers/review-controllers.js';
 import {
   protect,
   restrictTo,
@@ -12,7 +9,7 @@ const router = Router();
 
 router
   .route('/')
-  .get(getAllReviews)
-  .post(protect, restrictTo('user'), createReview);
+  .get(reviewControllers.getAllReviews)
+  .post(protect, restrictTo('user'), reviewControllers.createReview);
 
 export default router;

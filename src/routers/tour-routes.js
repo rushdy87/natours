@@ -1,6 +1,7 @@
 import { Router } from 'express';
 
 import tourControllers from '../controllers/tour-controllers.js';
+import reviewControllers from '../controllers/review-controllers.js';
 
 const { protect, restrictTo } = await import(
   '../middlewares/authorization-middlewares.js'
@@ -25,5 +26,9 @@ router
     restrictTo('admin', 'lead-guide'),
     tourControllers.deleteTour,
   );
+
+router
+  .route('/:tourId/reviews')
+  .post(protect, restrictTo('user'), reviewControllers.createReview);
 
 export default router;
