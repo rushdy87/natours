@@ -11,20 +11,17 @@ const router = Router({ mergeParams: true });
 // The magic of mergeParams: now we can access req.params.tourId, even though
 // this router is mounted on /reviews, not /tours/:tourId/reviews
 
+router.use(protect);
+
 router
   .route('/')
   .get(reviewControllers.getAllReviews)
-  .post(
-    protect,
-    restrictTo('user'),
-    setUserAndTourIds,
-    reviewControllers.createReview,
-  );
+  .post(restrictTo('user'), setUserAndTourIds, reviewControllers.createReview);
 
 router
   .route('/:id')
   .get(reviewControllers.getReviewById)
-  .patch(protect, restrictTo('user', 'admin'), reviewControllers.updateReview)
-  .delete(protect, restrictTo('user', 'admin'), reviewControllers.deleteReview);
+  .patch(restrictTo('user', 'admin'), reviewControllers.updateReview)
+  .delete(restrictTo('user', 'admin'), reviewControllers.deleteReview);
 
 export default router;

@@ -12,14 +12,17 @@ const router = Router();
 router.post('/signup', AuthControllers.signup);
 router.post('/login', AuthControllers.login);
 router.post('/forgot-password', AuthControllers.forgotPassword);
-
-router.get('/me', protect, userControllers.getMe, userControllers.getUserById);
-
 router.patch('/reset-password/:token', AuthControllers.resetPassword);
-router.patch('/update-my-password', protect, AuthControllers.updatePassword);
-router.patch('/update-me', protect, userControllers.updateMe);
 
-router.delete('/delete-me', protect, userControllers.deleteMe);
+// Protect all routes after this middleware
+router.use(protect);
+
+router.patch('/update-my-password', AuthControllers.updatePassword);
+router.get('/me', userControllers.getMe, userControllers.getUserById);
+router.patch('/update-me', userControllers.updateMe);
+router.delete('/delete-me', userControllers.deleteMe);
+
+router.use(restrictTo('admin'));
 
 router
   .route('/')
@@ -30,6 +33,6 @@ router
   .route('/:id')
   .get(userControllers.getUserById)
   .patch(userControllers.updateUser)
-  .delete(protect, restrictTo('admin'), userControllers.deleteUser);
+  .delete(userControllers.deleteUser);
 
 export default router;

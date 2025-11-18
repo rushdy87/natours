@@ -14,17 +14,23 @@ const router = Router();
 router.use('/:tourId/reviews', reviewRouter);
 
 router.route('/tour-stats').get(tourControllers.getTourStats);
-router.route('/monthly-plan/:year').get(tourControllers.getMonthlyPlan);
+router
+  .route('/monthly-plan/:year')
+  .get(
+    protect,
+    restrictTo('admin', 'lead-guide', 'guide'),
+    tourControllers.getMonthlyPlan,
+  );
 
 router
   .route('/')
-  .get(protect, tourControllers.getAllTours)
-  .post(tourControllers.createTour);
+  .get(tourControllers.getAllTours)
+  .post(protect, restrictTo('admin', 'lead-guide'), tourControllers.createTour);
 
 router
   .route('/:id')
   .get(tourControllers.getTourById)
-  .patch(tourControllers.updateTour)
+  .patch(protect, restrictTo('admin', 'lead-guide'), tourControllers.updateTour)
   .delete(
     protect,
     restrictTo('admin', 'lead-guide'),
