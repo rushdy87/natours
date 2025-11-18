@@ -1,7 +1,17 @@
-//@description Run data seeder scripts for tours or users with import or delete options
-//* Usage: node runSeeder.js <-tours|-users> <-i|-d>
-//* Example to import tours: node runSeeder.js -tours -i
-//* Example to delete users: node runSeeder.js -users -d
+//@description Run data seeder scripts for tours, users, and reviews with import or delete options
+//* Usage: node runSeeder.js <-tours|-users|-reviews> <-i|-d>
+// - Case 1: Import tours data
+//   node runSeeder.js -tours -i
+// - Case 2: Delete tours data
+//   node runSeeder.js -tours -d
+// - Case 3: Import users data
+//   node runSeeder.js -users -i
+// - Case 4: Delete users data
+//  node runSeeder.js -users -d
+// - Case 5: Import reviews data
+//   node runSeeder.js -reviews -i
+// - Case 6: Delete reviews data
+//   node runSeeder.js -reviews -d
 
 import { exec } from 'child_process';
 // child_process is a built-in Node.js module, no need to install, its used to run shell commands
@@ -18,6 +28,7 @@ if (!target || !action) {
 const seederMap = {
   '-tours': './seeders/tours-dev-data.js',
   '-users': './seeders/users-dev-data.js',
+  '-reviews': './seeders/reviews-dev-data.js',
 };
 
 // Map action flags
@@ -40,11 +51,19 @@ console.log(`🚀 Running: ${command}`);
 exec(command, (error, stdout, stderr) => {
   if (error) {
     console.error(`❌ Error: ${error.message}`);
-    return;
+    process.exit(1);
   }
+
+  // Log stderr only if it contains actual error indicators
+  if (stderr && stderr.toLowerCase().includes('error')) {
+    console.error(`⚠️ Error output: ${stderr}`);
+    process.exit(1);
+  }
+
+  // Show any non-error stderr as warnings
   if (stderr) {
-    console.error(`⚠️ Stderr: ${stderr}`);
-    return;
+    console.warn(`⚠️ Warning: ${stderr}`);
   }
+
   console.log(`✅ Success:\n${stdout}`);
 });

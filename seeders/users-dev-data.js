@@ -1,24 +1,24 @@
 // Script used to populate the database with initial data.
-//* to run import script: node --env-file config/.env ./seeders/tours-dev-data.js --import
-//! to run delete script: node --env-file config/.env ./seeders/tours-dev-data.js --delete
+//* to run import script: node --env-file config/.env ./seeders/users-dev-data.js --import
+//! to run delete script: node --env-file config/.env ./seeders/users-dev-data.js --delete
 
 import fs from 'fs';
 import 'colors';
 
 import connectDB from '../config/db.js';
-import Tour from '../src/models/tour-model.js';
+import User from '../src/models/user-model.js';
 
 await connectDB();
 
 // Read JSON file
-const tours = JSON.parse(
-  fs.readFileSync(`${process.cwd()}/dev-data/data/tours.json`, 'utf-8'),
+const users = JSON.parse(
+  fs.readFileSync(`${process.cwd()}/dev-data/data/users.json`, 'utf-8'),
 );
 
 // Import data into DB
 const importData = async () => {
   try {
-    await Tour.create(tours);
+    await User.create(users, { validateBeforeSave: false });
     console.log('Data successfully loaded!'.green);
     process.exit(0);
   } catch (err) {
@@ -30,7 +30,7 @@ const importData = async () => {
 // Delete all data from DB
 const deleteData = async () => {
   try {
-    await Tour.deleteMany();
+    await User.deleteMany();
     console.log('Data successfully deleted!'.green);
     process.exit(0);
   } catch (err) {
