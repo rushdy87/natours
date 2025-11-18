@@ -2,47 +2,20 @@ import User from '../models/user-model.js';
 import { catchAsync } from '../utils/catch-async.js';
 import AppError from '../utils/app-error.js';
 import { filterObj } from '../utils/object-utils.js';
+import factory from '../utils/handler-factory.js';
 
-const getAllUsers = catchAsync(async (req, res, next) => {
-  const users = await User.find();
+const getAllUsers = factory.getAll(User);
 
-  res.status(200).json({
-    status: 'success',
-    results: users.length,
-    data: {
-      users,
-    },
-  });
-});
+const getUserById = factory.getOne(User);
 
-const getUserById = (req, res) => {
-  // const { id } = req.params;
-  res.status(200).json({
-    status: 'success',
-    data: {
-      user: {},
-    },
+const createUser = (req, res, next) => {
+  res.status(500).json({
+    status: 'error',
+    message: 'This route is not defined! Please use /signup instead.',
   });
 };
 
-const createUser = (req, res) => {
-  res.status(201).json({
-    status: 'success',
-    data: {
-      user: {},
-    },
-  });
-};
-
-const updateUser = (req, res) => {
-  // const { id } = req.params;
-  res.status(200).json({
-    status: 'success',
-    data: {
-      user: {},
-    },
-  });
-};
+const updateUser = factory.updateOne(User);
 
 const updateMe = catchAsync(async (req, res, next) => {
   // 1) Create error if user POSTs password data
@@ -72,13 +45,7 @@ const updateMe = catchAsync(async (req, res, next) => {
   });
 });
 
-const deleteUser = (req, res) => {
-  // const { id } = req.params;
-  res.status(204).json({
-    status: 'success',
-    data: null,
-  });
-};
+const deleteUser = factory.deleteOne(User);
 
 const deleteMe = catchAsync(async (req, res, next) => {
   await User.findByIdAndUpdate(req.user.id, { active: false });

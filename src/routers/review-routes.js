@@ -4,6 +4,7 @@ import {
   protect,
   restrictTo,
 } from '../middlewares/authorization-middlewares.js';
+import { setUserAndTourIds } from '../middlewares/review-middlewares.js';
 
 // mergeParams to access params from parent router, i.e., tourId
 const router = Router({ mergeParams: true });
@@ -13,6 +14,17 @@ const router = Router({ mergeParams: true });
 router
   .route('/')
   .get(reviewControllers.getAllReviews)
-  .post(protect, restrictTo('user'), reviewControllers.createReview);
+  .post(
+    protect,
+    restrictTo('user'),
+    setUserAndTourIds,
+    reviewControllers.createReview,
+  );
+
+router
+  .route('/:id')
+  .get(reviewControllers.getReviewById)
+  .patch(protect, restrictTo('user', 'admin'), reviewControllers.updateReview)
+  .delete(protect, restrictTo('user', 'admin'), reviewControllers.deleteReview);
 
 export default router;

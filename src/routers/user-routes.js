@@ -2,7 +2,10 @@ import { Router } from 'express';
 
 import userControllers from '../controllers/user-controllers.js';
 import AuthControllers from '../controllers/auth-controllers.js';
-import { protect } from '../middlewares/authorization-middlewares.js';
+import {
+  protect,
+  restrictTo,
+} from '../middlewares/authorization-middlewares.js';
 
 const router = Router();
 
@@ -25,6 +28,6 @@ router
   .route('/:id')
   .get(userControllers.getUserById)
   .patch(userControllers.updateUser)
-  .delete(userControllers.deleteUser);
+  .delete(protect, restrictTo('admin'), userControllers.deleteUser);
 
 export default router;
