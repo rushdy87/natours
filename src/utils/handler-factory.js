@@ -13,8 +13,14 @@ const getAll = (Model) =>
     let filter = {};
     if (req.params.tourId) filter = { tour: req.params.tourId };
 
-    const features = new APIFeatures(Model.find(filter), req.query);
-    const docs = await features.filter().sort().limitFields().paginate().query;
+    const features = new APIFeatures(Model.find(filter), req.query)
+      .filter()
+      .sort()
+      .limitFields()
+      .paginate();
+
+    // const docs = await features.query.explain();
+    const docs = await features.query;
 
     res.status(200).json({
       status: 'success',
@@ -110,3 +116,22 @@ const updateOne = (Model) =>
   });
 
 export default { getAll, getOne, createOne, deleteOne, updateOne };
+
+/* Notes about explain() in getAll:
+ * explain() method provides detailed information about how MongoDB executes a query.
+ * This can be useful for performance analysis and optimization.
+ * In the getAll function, adding .explain() to the query helps in understanding the query execution plan.
+ * This is particularly useful for complex queries involving filtering, sorting, field limiting, and pagination.
+ * By analyzing the output of explain(), developers can identify potential bottlenecks and optimize their queries accordingly.
+ ! However, in a production environment, it's common to remove explain() to avoid the overhead it introduces.
+ */
+/* Notes about indexing in MongoDB:
+ * Indexes support the efficient execution of queries in MongoDB.
+ * Without indexes, MongoDB must perform a collection scan, i.e., scan every document
+ * in a collection, to select those documents that match the query statement.
+ * This can be very inefficient and slow for large collections.
+ * Proper indexing can significantly improve query performance.
+ * It's important to analyze query patterns and create indexes that support those queries.
+ * However, excessive indexing can lead to increased storage requirements and slower write
+ * operations, so indexes should be used judiciously.
+ */
