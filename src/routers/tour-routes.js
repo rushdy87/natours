@@ -1,13 +1,17 @@
 import { Router } from 'express';
 
 import tourControllers from '../controllers/tour-controllers.js';
-import reviewControllers from '../controllers/review-controllers.js';
+
+import reviewRouter from './review-routes.js';
 
 const { protect, restrictTo } = await import(
   '../middlewares/authorization-middlewares.js'
 );
 
 const router = Router();
+
+// Nested route for reviews
+router.use('/:tourId/reviews', reviewRouter);
 
 router.route('/tour-stats').get(tourControllers.getTourStats);
 router.route('/monthly-plan/:year').get(tourControllers.getMonthlyPlan);
@@ -27,8 +31,10 @@ router
     tourControllers.deleteTour,
   );
 
-router
-  .route('/:tourId/reviews')
-  .post(protect, restrictTo('user'), reviewControllers.createReview);
+// In reality, this don't belong here. They should be in review-routes.js, and the
+// review-routes.js should be mounted on /tours/:tourId/reviews
+// router
+//   .route('/:tourId/reviews')
+//   .post(protect, restrictTo('user'), reviewControllers.createReview);
 
 export default router;
