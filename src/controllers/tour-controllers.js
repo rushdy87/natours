@@ -135,6 +135,49 @@ const getToursWithin = catchAsync(async (req, res, next) => {
   });
 });
 
+const getDistances = catchAsync(async (req, res, next) => {
+  const { latlng, unit } = req.params;
+  const [lat, lng] = latlng.split(',');
+
+  if (!lat || !lng) {
+    next(
+      new AppError(
+        'Please provide latitude and longitude in the format lat,lng.',
+        400,
+      ),
+    );
+  }
+
+  const multiplier = unit === 'mi' ? 0.000621371 : 0.001; // meters to miles or kilometers
+
+  const distances = await Tour.aggregate([
+    {
+      // geoNear must be the first stage in the pipeline
+      $geoNear: {
+        near: {
+          type: 'Point',
+          coordinates: [parseFloat(lng), parseFloat(lat)],
+        },
+        distanceField: 'distance', // The calculated distance will be stored in this field
+        distanceMultiplier: multiplier, // Convert distance to desired unit
+      },
+    },
+    {
+      $project: {
+        distance: 1,
+        name: 1,
+      },
+    },
+  ]);
+
+  res.status(200).json({
+    status: 'success',
+    data: {
+      data: distances,
+    },
+  });
+});
+
 export default {
   getAllTours,
   getTourById,
@@ -144,4 +187,5 @@ export default {
   getTourStats,
   getMonthlyPlan,
   getToursWithin,
+  getDistances,
 };
