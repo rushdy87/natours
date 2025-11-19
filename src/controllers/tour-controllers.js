@@ -1,4 +1,5 @@
 import Tour from '../models/tour-model.js';
+import AppError from '../utils/app-error.js';
 import { catchAsync } from '../utils/catch-async.js';
 import factory from '../utils/handler-factory.js';
 
@@ -105,6 +106,35 @@ const getMonthlyPlan = catchAsync(async (req, res, next) => {
   });
 });
 
+const getToursWithin = catchAsync(async (req, res, next) => {
+  const { distance, latlng, unit } = req.params;
+  const [lat, lng] = latlng.split(',');
+
+  // In mongodb, radius for $geoWithin with $centerSphere is in radians (distance / radius of Earth)
+  const radius = unit === 'mi' ? distance / 3963.2 : distance / 6378.1;
+
+  if (!lat || !lng) {
+    next(
+      new AppError(
+        'Please provide latitude and longitude in the format lat,lng.',
+        400,
+      ),
+    );
+  }
+
+  const tours = await Tour.find({
+    startLocation: { $geoWithin: { $centerSphere: [[lng, lat], radius] } },
+  });
+
+  res.status(200).json({
+    status: 'success',
+    results: tours.length,
+    data: {
+      data: tours,
+    },
+  });
+});
+
 export default {
   getAllTours,
   getTourById,
@@ -113,4 +143,5 @@ export default {
   deleteTour,
   getTourStats,
   getMonthlyPlan,
+  getToursWithin,
 };

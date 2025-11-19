@@ -123,6 +123,7 @@ const tourSchema = new mongoose.Schema(
 // Indexes for performance optimization
 tourSchema.index({ price: 1, ratingsAverage: -1 }); // Compound index on price (ascending) and ratingsAverage (descending)
 tourSchema.index({ slug: 1 }); // Index on slug for faster queries
+tourSchema.index({ startLocation: '2dsphere' }); // Geospatial index for startLocation
 
 // Define virtual properties, indexes, middleware, or methods here if needed
 tourSchema.virtual('durationWeeks').get(function () {
