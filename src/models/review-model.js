@@ -29,6 +29,9 @@ const reviewSchema = new mongoose.Schema(
   },
 );
 
+// Ensure one review per user per tour
+reviewSchema.index({ user: 1, tour: 1 }, { unique: true }); // every combination of user and tour must be unique
+
 reviewSchema.pre(/^find/, function (next) {
   // Skip population for findOneAnd operations to avoid conflicts
   if (this.op && this.op.includes('findOneAnd')) {

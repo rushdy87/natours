@@ -7,6 +7,8 @@ import 'colors';
 
 import connectDB from '../config/db.js';
 import Review from '../src/models/review-model.js';
+import Tour from '../src/models/tour-model.js'; // Import Tour model to register it
+import User from '../src/models/user-model.js'; // Import User model to register it
 
 await connectDB();
 
