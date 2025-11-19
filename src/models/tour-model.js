@@ -34,7 +34,7 @@ const tourSchema = new mongoose.Schema(
       },
       trim: true,
     },
-    ratingAverage: {
+    ratingsAverage: {
       type: Number,
       default: 4.5,
       min: [1, 'Rating must be above 1.0'],
@@ -120,7 +120,7 @@ const tourSchema = new mongoose.Schema(
 );
 
 // Indexes for performance optimization
-tourSchema.index({ price: 1, ratingAverage: -1 }); // Compound index on price (ascending) and ratingAverage (descending)
+tourSchema.index({ price: 1, ratingsAverage: -1 }); // Compound index on price (ascending) and ratingsAverage (descending)
 tourSchema.index({ slug: 1 }); // Index on slug for faster queries
 
 // Define virtual properties, indexes, middleware, or methods here if needed

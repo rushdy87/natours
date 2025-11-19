@@ -16,7 +16,7 @@ const getTourStats = catchAsync(async (req, res, next) => {
   const stats = await Tour.aggregate([
     {
       // Stage 1: Filtering
-      $match: { ratingAverage: { $gte: 4.5 } }, // $match is used to filter documents, similar to the find() method
+      $match: { ratingsAverage: { $gte: 4.5 } }, // $match is used to filter documents, similar to the find() method
       //* $match is used to filter documents, similar to the find() method
     },
     {
@@ -27,7 +27,7 @@ const getTourStats = catchAsync(async (req, res, next) => {
         _id: { $toUpper: '$difficulty' }, // Grouping by difficulty level
         numTours: { $sum: 1 }, // Count total tours, each document adds 1
         numRatings: { $sum: '$ratingsQuantity' }, // Count total ratings
-        avgRating: { $avg: '$ratingAverage' }, // Calculate average rating
+        avgRating: { $avg: '$ratingsAverage' }, // Calculate average rating
         avgPrice: { $avg: '$price' }, // Calculate average price
         minPrice: { $min: '$price' }, // Calculate minimum price
         maxPrice: { $max: '$price' }, // Calculate maximum price
